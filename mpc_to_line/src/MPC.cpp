@@ -263,7 +263,9 @@ int main() {
   ptsy << -1, -1;
 
   // TODO: fit a polynomial to the above x and y coordinates
-  auto coeffs = ? ;
+  // The polynomial is fitted to a straight line so a polynomial with
+  // order 1 is sufficient.
+  auto coeffs = polyfit(ptsx, ptsy, 1);
 
   // NOTE: free feel to play around with these
   double x = -1;
@@ -271,9 +273,12 @@ int main() {
   double psi = 0;
   double v = 10;
   // TODO: calculate the cross track error
-  double cte = ? ;
+  double cte = y - polyeval(coeffs, x);
   // TODO: calculate the orientation error
-  double epsi = ? ;
+  // derivative of coeffs[0] + coeffs[1] * x -> coeffs[1]
+  double epsi = psi - atan(coeffs[1]);
+  while (epsi > M_PI) epsi -= 2.*M_PI;
+  while (epsi <-M_PI) epsi += 2.*M_PI;
 
   Eigen::VectorXd state(6);
   state << x, y, psi, v, cte, epsi;
